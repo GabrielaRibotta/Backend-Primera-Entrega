@@ -30,16 +30,16 @@ productRouter.get('/:pid', async (req, res) =>{
 
 //POST
 productRouter.post('/', async (req, res) =>{
-    const { title, description, price, thumbnail, code, stock } = req.body
-    const newProduct = await productManager.addProduct({ title, description, price, thumbnail, code, stock })
+    const { title, description, code, price, status, stock, category, thumbnail } = req.body
+    const newProduct = await productManager.addProduct({ title, description, code, price, status, stock, category, thumbnail })
     res.send(newProduct)
 })
 
 //PUT
 productRouter.put('/:pid', async (req, res) =>{
     let id = req.params.pid
-    const { title, description, price, thumbnail, code, stock } = req.body
-    const updateProduct = await productManager.updateProduct(id, title, description, price, thumbnail, code, stock)
+    const { title, description, code, price, status, stock, category, thumbnail } = req.body
+    const updateProduct = await productManager.updateProduct(id, title, description, code, price, status, stock, category, thumbnail)
     res.send(updateProduct)
 })
 

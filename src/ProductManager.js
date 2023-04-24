@@ -60,7 +60,7 @@ export class ProductManager {
         }
     }
 
-    async updateProduct(id, title, description, price, thumbnail, code, stock){
+    async updateProduct(title, description, code, price, status, stock, category, thumbnail){
         //Leer txt
         const data = await fs.readFile(this.path, 'utf-8')
         //Parse
@@ -72,10 +72,12 @@ export class ProductManager {
             }).indexOf(parseInt(id))
             productsJSON[index].title = title
             productsJSON[index].description = description
-            productsJSON[index].price = price
-            productsJSON[index].thumbnail = thumbnail
             productsJSON[index].code = code
+            productsJSON[index].price = price
+            productsJSON[index].status = status
             productsJSON[index].stock = stock
+            productsJSON[index].category = category
+            productsJSON[index].thumbnail = thumbnail
             //Escribir txt
             await fs.writeFile(this.path, JSON.stringify(productsJSON))
             return "Producto actualizado."
@@ -107,14 +109,16 @@ export class ProductManager {
 //-----------------------
 
 class Product {
-    constructor (title = "", description = "", price = 0, thumbnail = "", code = "", stock = 0){
+    constructor (title = "", description = "", code = "", price = 0, status = true, stock = 0, category = "", thumbnail = ""){
+        this.id = Product.incrementID(),
         this.title = title,
         this.description = description,
-        this.price = price,
-        this.thumbnail = thumbnail,
         this.code = code,
-        this.stock = stock
-        this.id = Product.incrementID()
+        this.price = price,
+        this.status = status,
+        this.stock = stock,
+        this.category = category,
+        this.thumbnail = thumbnail
     }
 
     static incrementID(){

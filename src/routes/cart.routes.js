@@ -17,6 +17,13 @@ cartRouter.get('/:id', async (req, res) =>{
     res.send(cart)
 })
 
+//POST
+//Crear nuevo carrito
+cartRouter.post('/', async (req, res) =>{
+    const newCart = await cartManager.createCart()
+    res.send(newCart)
+})
+
 //Agregar producto al carrito
 cartRouter.post('/:id/products/:pid', async (req, res) =>{
     let idCart = req.params.id
