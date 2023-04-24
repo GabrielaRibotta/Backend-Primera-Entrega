@@ -32,34 +32,34 @@ export class CartManager {
     async getCartById(id){
         const data = await fs.readFile(this.path, 'utf-8')
         const carts = JSON.parse(data)
-        const cartById = carts.some(el => el.id === parseInt(id))
+        const cartById = carts.find(el => el.id === parseInt(id))
         if(cartById){
-            return carts.find(el => el.id === parseInt(id))
+            return cartById
         } else {
             return "Carrito no encontrado."
         }
     }
 
     //Agregar producto a carrito
-    async addProductToCart(idCart, idProduct, newQuantity){
+    async addProductToCart(idCart, idProduct, quantity){
         const data = await fs.readFile(this.path, 'utf-8')
         const carts = JSON.parse(data)
         const cartById = carts.find(el => el.id === parseInt(idCart))
-        const productIsInCart = cartById.products.some(el => el.id === parseInt(id))
-        if(productIsInCart){
-            //Modifico la cantidad del producto en el cart
-            const product = carts.find(el => el.id === parseInt(idProduct))
-            product.quantity = quantity + newQuantity
-            cartById.products.push(product)
-            return "Cantidad modificada en el carrito."
-        } else {
+        const productInCart = cartById.products.find(el => el.id === parseInt(idProduct))
+        if(!productInCart){
             //Creo el objeto con idProduct y quantity
-            const newProduct = {id: idProduct, quantity: newQuantity}
+            const newProduct = {id: parseInt(idProduct), quantity: parseInt(quantity)}
             //Guardo en el carrito
             cartById.products.push(newProduct)
+            //Escribir en el txt
+            await fs.writeFile(this.path, JSON.stringify(carts))
+            return "Producto agregado al carrito."
+        } else {
+            //Modifico la cantidad del producto en el cart
+            productInCart.quantity = productInCart.quantity + quantity
+            //Escribir en el txt
+            await fs.writeFile(this.path, JSON.stringify(carts))
+            return "Cantidad modificada en el carrito."
         }
-        //Escribir en el txt
-        await fs.writeFile(this.path, JSON.stringify(cartById))
-        return "Producto agregado al carrito."
     }
 }

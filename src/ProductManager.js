@@ -7,16 +7,36 @@ export class ProductManager {
         this.products = []
     }
 
+    //Id Autoincremetable
+    static incrementID(){
+        if (this.idIncrement) {
+            this.idIncrement++
+        } else {
+            this.idIncrement = 1
+        }
+        return this.idIncrement
+    }
+
     // Métodos
     async addProduct(product){
+        //Leer txt
+        const data = await fs.readFile(this.path, 'utf-8')
+        //Parse
+        const productsJSON = JSON.parse(data)
         //Confirmar que producto no está en el array
-        if(this.products.some(el => el.code === product.code)){
+        if(productsJSON.some(el => el.code === product.code)){
             return "El producto ya se encuentra en el array."
         }else{
         //Agregar producto
-            this.products.push(product)
+            if(productsJSON.length === 0){
+                product.id = ProductManager.incrementID()
+            } else{
+                product.id = productsJSON.length + 1
+            }
+            productsJSON.push(product)
         //Escribir txt
-        await fs.writeFile(this.path, JSON.stringify(this.products))
+        await fs.writeFile(this.path, JSON.stringify(productsJSON))
+        return "Producto creado."
         }
     }
     async getProducts(){
@@ -40,7 +60,7 @@ export class ProductManager {
         }
     }
 
-    async updateProduct(id, newTitle, newDescription, newPrice, newThumbnail, newCode, newStock){
+    async updateProduct(id, title, description, price, thumbnail, code, stock){
         //Leer txt
         const data = await fs.readFile(this.path, 'utf-8')
         //Parse
@@ -49,13 +69,13 @@ export class ProductManager {
         if(element){
             const index = productsJSON.map(productToUpdate => {
                 return productToUpdate.id
-            }).indexOf(id)
-            productsJSON[index].title = newTitle
-            productsJSON[index].description = newDescription
-            productsJSON[index].price = newPrice
-            productsJSON[index].thumbnail = newThumbnail
-            productsJSON[index].code = newCode
-            productsJSON[index].stock = newStock
+            }).indexOf(parseInt(id))
+            productsJSON[index].title = title
+            productsJSON[index].description = description
+            productsJSON[index].price = price
+            productsJSON[index].thumbnail = thumbnail
+            productsJSON[index].code = code
+            productsJSON[index].stock = stock
             //Escribir txt
             await fs.writeFile(this.path, JSON.stringify(productsJSON))
             return "Producto actualizado."

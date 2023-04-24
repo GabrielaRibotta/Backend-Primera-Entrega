@@ -31,16 +31,16 @@ productRouter.get('/:pid', async (req, res) =>{
 //POST
 productRouter.post('/', async (req, res) =>{
     const { title, description, price, thumbnail, code, stock } = req.body
-    await productManager.addProduct({ title, description, price, thumbnail, code, stock })
-    res.send("Producto creado.")
+    const newProduct = await productManager.addProduct({ title, description, price, thumbnail, code, stock })
+    res.send(newProduct)
 })
 
 //PUT
 productRouter.put('/:pid', async (req, res) =>{
     let id = req.params.pid
     const { title, description, price, thumbnail, code, stock } = req.body
-    const newProduct = await productManager.updateProduct(id, { title, description, price, thumbnail, code, stock })
-    res.send(newProduct)
+    const updateProduct = await productManager.updateProduct(id, title, description, price, thumbnail, code, stock)
+    res.send(updateProduct)
 })
 
 //DELETE
