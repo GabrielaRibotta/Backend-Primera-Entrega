@@ -24,8 +24,16 @@ productRouter.get('/', async (req, res) =>{
 productRouter.get('/:pid', async (req, res) =>{
     let id = req.params.pid
     //Leer txt
-    const products = await productManager.getProductById(id)
-    res.send(products)
+    const product = await productManager.getProductById(id)
+    res.render('product',{
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        code: product.code,
+        stock: product.stock,
+        thumbnail: product.thumbnail
+    })
+    //res.send(products)
 })
 
 //POST
